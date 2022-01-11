@@ -49,18 +49,24 @@ inline void Thread::AllowThreadSuspension() {
   PoisonObjectPointers();
 }
 
-inline void Thread::CheckSuspend() {
+inline void Thread::CheckSuspend(bool implicit) {
   DCHECK_EQ(Thread::Current(), this);
   for (;;) {
     if (ReadFlag(kCheckpointRequest)) {
       RunCheckpointFunction();
     } else if (ReadFlag(kSuspendRequest)) {
-      FullSuspendCheck();
+      FullSuspendCheck(implicit);
+      implicit = false;  // We do not need to `MadviseAwayAlternateSignalStack()` anymore.
     } else if (ReadFlag(kEmptyCheckpointRequest)) {
       RunEmptyCheckpoint();
     } else {
       break;
     }
+  }
+  if (implicit) {
+    // For implicit suspend check we want to `madvise()` away
+    // the alternate signal stack to avoid wasting memory.
+    MadviseAwayAlternateSignalStack();
   }
 }
 
