@@ -440,7 +440,10 @@ public class DexUseManagerLocal {
 
     private static boolean isOwningPackageForPrimaryDex(
             @NonNull PackageState pkgState, @NonNull String dexPath) {
-        AndroidPackage pkg = Utils.getPackageOrThrow(pkgState);
+        AndroidPackage pkg = pkgState.getAndroidPackage();
+        if (pkg == null) {
+            return false;
+        }
         List<AndroidPackageSplit> splits = pkg.getSplits();
         for (int i = 0; i < splits.size(); i++) {
             if (splits.get(i).getPath().equals(dexPath)) {
@@ -1058,7 +1061,11 @@ public class DexUseManagerLocal {
 
         public @NonNull List<Path> getLocations(
                 @NonNull PackageState pkgState, @NonNull UserHandle userHandle) {
-            AndroidPackage pkg = Utils.getPackageOrThrow(pkgState);
+            AndroidPackage pkg = pkgState.getAndroidPackage();
+            if (pkg == null) {
+                return List.of();
+            }
+
             UUID storageUuid = pkg.getStorageUuid();
             String packageName = pkgState.getPackageName();
 
