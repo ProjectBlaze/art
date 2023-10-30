@@ -42,7 +42,6 @@ class HBasicBlockBuilder : public ValueObject {
   // Creates basic blocks in `graph_` for compiling an intrinsic.
   void BuildIntrinsic();
 
-  size_t GetNumberOfBranches() const { return number_of_branches_; }
   HBasicBlock* GetBlockAt(uint32_t dex_pc) const { return branch_targets_[dex_pc]; }
 
   size_t GetQuickenIndex(uint32_t dex_pc) const;
@@ -81,7 +80,6 @@ class HBasicBlockBuilder : public ValueObject {
   ScopedArenaAllocator* const local_allocator_;
   ScopedArenaVector<HBasicBlock*> branch_targets_;
   ScopedArenaVector<HBasicBlock*> throwing_blocks_;
-  size_t number_of_branches_;
 
   // A table to quickly find the quicken index for the first instruction of a basic block.
   ScopedArenaSafeMap<uint32_t, uint32_t> quicken_index_for_dex_pc_;
