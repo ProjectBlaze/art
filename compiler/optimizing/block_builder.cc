@@ -40,7 +40,6 @@ HBasicBlockBuilder::HBasicBlockBuilder(HGraph* graph,
                       local_allocator->Adapter(kArenaAllocGraphBuilder)),
       throwing_blocks_(kDefaultNumberOfThrowingBlocks,
                        local_allocator->Adapter(kArenaAllocGraphBuilder)),
-      number_of_branches_(0u),
       quicken_index_for_dex_pc_(std::less<uint32_t>(),
                                 local_allocator->Adapter(kArenaAllocGraphBuilder)) {}
 
@@ -104,10 +103,8 @@ bool HBasicBlockBuilder::CreateBranchTargets() {
     const Instruction& instruction = pair.Inst();
 
     if (instruction.IsBranch()) {
-      number_of_branches_++;
       MaybeCreateBlockAt(dex_pc + instruction.GetTargetOffset());
     } else if (instruction.IsSwitch()) {
-      number_of_branches_++;  // count as at least one branch (b/77652521)
       DexSwitchTable table(instruction, dex_pc);
       for (DexSwitchTableIterator s_it(table); !s_it.Done(); s_it.Advance()) {
         MaybeCreateBlockAt(dex_pc + s_it.CurrentTargetOffset());
