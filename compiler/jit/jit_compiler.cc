@@ -212,7 +212,7 @@ bool JitCompiler::CompileMethod(
   // trim maps to reduce memory usage.
   if (jit->GetThreadPool() == nullptr || jit->GetThreadPool()->GetTaskCount(self) == 0) {
     TimingLogger::ScopedTiming t2("TrimMaps", &logger);
-    runtime->GetJitArenaPool()->TrimMaps();
+    runtime->GetJitArenaPool()->TrimMaps(/* release_eagerly= */ false);
   }
 
   jit->AddTimingLogger(logger);
