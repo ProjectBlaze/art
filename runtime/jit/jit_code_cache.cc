@@ -1763,7 +1763,7 @@ void JitCodeCache::PostForkChildAction(bool is_system_server, bool is_zygote) {
   // JitCodeCache::PostForkChildAction first, and then does some code loading
   // that may result in new JIT tasks that we want to keep.
   Runtime* runtime = Runtime::Current();
-  ThreadPool* pool = runtime->GetJit()->GetThreadPool();
+  JitThreadPool* pool = runtime->GetJit()->GetThreadPool();
   if (pool != nullptr) {
     pool->RemoveAllTasks(self);
   }
