@@ -2282,7 +2282,9 @@ void CodeGeneratorARMVIXL::MaybeIncrementHotness(HSuspendCheck* suspend_check,
     }
   }
 
-  if (GetGraph()->IsCompilingBaseline() && !Runtime::Current()->IsAotCompiler()) {
+  if (GetGraph()->IsCompilingBaseline() && 
+    GetGraph()->IsUsefulOptimizing() &&
+    !Runtime::Current()->IsAotCompiler()) {
     ProfilingInfo* info = GetGraph()->GetProfilingInfo();
     DCHECK(info != nullptr);
     DCHECK(!HasEmptyFrame());
