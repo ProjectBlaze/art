@@ -1554,9 +1554,8 @@ bool HInliner::IsInliningEncouraged(const HInvoke* invoke_instruction,
     return false;
   }
 
-  static constexpr size_t kBaselineMaxCodeUnits = 8;
   size_t inline_max_code_units = graph_->IsCompilingBaseline()
-      ? kBaselineMaxCodeUnits
+      ? CompilerOptions::kBaselineMaxCodeUnits
       : codegen_->GetCompilerOptions().GetInlineMaxCodeUnits();
   if (accessor.InsnsSizeInCodeUnits() > inline_max_code_units) {
     LOG_FAIL(stats_, MethodCompilationStat::kNotInlinedCodeItem)
