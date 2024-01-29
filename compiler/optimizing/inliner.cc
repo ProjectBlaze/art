@@ -165,7 +165,9 @@ bool HInliner::Run() {
   // depending on the state of classes at runtime.
   const bool honor_noinline_directives = codegen_->GetCompilerOptions().CompileArtTest();
   const bool honor_inline_directives =
-      honor_noinline_directives && Runtime::Current()->IsAotCompiler();
+      honor_noinline_directives &&
+      Runtime::Current()->IsAotCompiler() &&
+      !graph_->IsCompilingBaseline();
 
   // Keep a copy of all blocks when starting the visit.
   ArenaVector<HBasicBlock*> blocks = graph_->GetReversePostOrder();
@@ -1552,7 +1554,10 @@ bool HInliner::IsInliningEncouraged(const HInvoke* invoke_instruction,
     return false;
   }
 
-  size_t inline_max_code_units = codegen_->GetCompilerOptions().GetInlineMaxCodeUnits();
+  static constexpr size_t kBaselineMaxCodeUnits = 8;
+  size_t inline_max_code_units = graph_->IsCompilingBaseline()
+      ? kBaselineMaxCodeUnits
+      : codegen_->GetCompilerOptions().GetInlineMaxCodeUnits();
   if (accessor.InsnsSizeInCodeUnits() > inline_max_code_units) {
     LOG_FAIL(stats_, MethodCompilationStat::kNotInlinedCodeItem)
         << "Method " << method->PrettyMethod()
