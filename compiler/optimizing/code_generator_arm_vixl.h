@@ -520,7 +520,7 @@ class CodeGeneratorARMVIXL : public CodeGenerator {
                        OptimizingCompilerStats* stats = nullptr);
   virtual ~CodeGeneratorARMVIXL() {}
 
-  void GenerateFrameEntry() override;
+  bool TryGenerateFrameEntry() override;
   void GenerateFrameExit() override;
   void Bind(HBasicBlock* block) override;
   void MoveConstant(Location destination, int32_t value) override;

@@ -279,11 +279,11 @@ static void ValidateGraph(HGraph* graph) {
 }
 
 template <typename Expected>
-static void RunCodeNoCheck(CodeGenerator* codegen,
-                           HGraph* graph,
-                           const std::function<void(HGraph*)>& hook_before_codegen,
-                           bool has_result,
-                           Expected expected) {
+static void RunCodeNoValidation(CodeGenerator* codegen,
+                                HGraph* graph,
+                                const std::function<void(HGraph*)>& hook_before_codegen,
+                                bool has_result,
+                                Expected expected) {
   {
     ScopedArenaAllocator local_allocator(graph->GetArenaStack());
     SsaLivenessAnalysis liveness(graph, codegen, &local_allocator);
@@ -295,7 +295,8 @@ static void RunCodeNoCheck(CodeGenerator* codegen,
   }
   hook_before_codegen(graph);
   InternalCodeAllocator allocator;
-  codegen->Compile(&allocator);
+  const bool result = codegen->Compile();
+  CHECK(result);
   Run(allocator, *codegen, has_result, expected);
 }
 
@@ -306,7 +307,7 @@ static void RunCode(CodeGenerator* codegen,
                     bool has_result,
                     Expected expected) {
   ValidateGraph(graph);
-  RunCodeNoCheck(codegen, graph, hook_before_codegen, has_result, expected);
+  RunCodeNoValidation(codegen, graph, hook_before_codegen, has_result, expected);
 }
 
 template <typename Expected>
