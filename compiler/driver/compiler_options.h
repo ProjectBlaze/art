@@ -132,6 +132,10 @@ class CompilerOptions final {
     return num_dalvik_instructions > huge_method_threshold_;
   }
 
+  bool IsLargeMethod(size_t num_dalvik_instructions) const {
+    return num_dalvik_instructions > large_method_threshold_;
+  }
+
   size_t GetNumDexMethodsThreshold() const {
     return num_dex_methods_threshold_;
   }
