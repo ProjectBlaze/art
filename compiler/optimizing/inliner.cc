@@ -1554,9 +1554,7 @@ bool HInliner::IsInliningEncouraged(const HInvoke* invoke_instruction,
     return false;
   }
 
-  size_t inline_max_code_units = graph_->IsCompilingBaseline()
-      ? CompilerOptions::kBaselineInlineMaxCodeUnits
-      : codegen_->GetCompilerOptions().GetInlineMaxCodeUnits();
+  size_t inline_max_code_units = codegen_->GetCompilerOptions().GetInlineMaxCodeUnits();
   if (accessor.InsnsSizeInCodeUnits() > inline_max_code_units) {
     LOG_FAIL(stats_, MethodCompilationStat::kNotInlinedCodeItem)
         << "Method " << method->PrettyMethod()
@@ -1564,6 +1562,14 @@ bool HInliner::IsInliningEncouraged(const HInvoke* invoke_instruction,
         << accessor.InsnsSizeInCodeUnits()
         << " > "
         << inline_max_code_units;
+    return false;
+  }
+
+  if (graph_->IsCompilingBaseline() &&
+      accessor.InsnsSizeInCodeUnits() > CompilerOptions::kBaselineInlineMaxCodeUnits) {
+    LOG_FAIL_NO_STAT() << "Reached baseline maximum code unit for inlining  "
+                       << method->PrettyMethod();
+    outermost_graph_->SetUsefulOptimizing();
     return false;
   }
 
