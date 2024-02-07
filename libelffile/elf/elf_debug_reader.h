@@ -133,7 +133,7 @@ class ElfDebugReader {
       }
     }
     if (gnu_debugdata_reader_ != nullptr) {
-      gnu_debugdata_reader_->VisitFunctionSymbols(visit_sym);
+      gnu_debugdata_reader_->VisitFunctionSymbols(std::forward<VisitSym>(visit_sym));
     }
   }
 
@@ -167,7 +167,8 @@ class ElfDebugReader {
       }
     }
     if (gnu_debugdata_reader_ != nullptr) {
-      gnu_debugdata_reader_->VisitDebugFrame(visit_cie, visit_fde);
+      gnu_debugdata_reader_->VisitDebugFrame(std::forward<VisitCIE>(visit_cie),
+                                             std::forward<VisitFDE>(visit_fde));
     }
   }
 
