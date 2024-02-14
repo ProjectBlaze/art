@@ -1782,7 +1782,7 @@ class Thread {
   // first if possible.
   /***********************************************************************************************/
 
-  struct PACKED(4) tls_32bit_sized_values {
+  struct tls_32bit_sized_values {
     // We have no control over the size of 'bool', but want our boolean fields
     // to be 4-byte quantities.
     using bool32_t = uint32_t;
@@ -1917,7 +1917,7 @@ class Thread {
     uint32_t shared_method_hotness;
   } tls32_;
 
-  struct PACKED(8) tls_64bit_sized_values {
+  struct tls_64bit_sized_values {
     tls_64bit_sized_values() : trace_clock_base(0) {
     }
 
@@ -1927,7 +1927,7 @@ class Thread {
     RuntimeStats stats;
   } tls64_;
 
-  struct PACKED(sizeof(void*)) tls_ptr_sized_values {
+  struct tls_ptr_sized_values {
       tls_ptr_sized_values() : card_table(nullptr),
                                exception(nullptr),
                                stack_end(nullptr),
