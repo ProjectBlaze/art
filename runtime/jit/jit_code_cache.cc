@@ -616,8 +616,8 @@ void JitCodeCache::CopyInlineCacheInto(
     /*out*/StackHandleScope<InlineCache::kIndividualCacheSize>* classes) {
   if (classes == nullptr) return;
   static_assert(arraysize(ic.classes_) == InlineCache::kIndividualCacheSize);
-  DCHECK_EQ(classes->NumberOfReferences(), InlineCache::kIndividualCacheSize);
-  DCHECK_EQ(classes->RemainingSlots(), InlineCache::kIndividualCacheSize);
+  DCHECK_EQ(classes->Capacity(), InlineCache::kIndividualCacheSize);
+  DCHECK_EQ(classes->Size(), 0u);
   WaitUntilInlineCacheAccessible(Thread::Current());
   // Note that we don't need to lock `lock_` here, the compiler calling
   // this method has already ensured the inline cache will not be deleted.
@@ -628,7 +628,7 @@ void JitCodeCache::CopyInlineCacheInto(
     }
     mirror::Class* object = root.Read();
     if (object != nullptr) {
-      DCHECK_NE(classes->RemainingSlots(), 0u);
+      DCHECK_LT(classes->Size(), classes->Capacity());
       classes->NewHandle(object);
     }
   }
